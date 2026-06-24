@@ -7,6 +7,7 @@ from fastapi import APIRouter
 from .health import router as health_router
 from .ui import router as ui_router
 from .reputation import router as reputation_router
+from .web_search import router as web_search_router
 
 # Export routers
-__all__ = ["health_router", "ui_router", "reputation_router"]
+__all__ = ["health_router", "ui_router", "reputation_router", "web_search_router"]
