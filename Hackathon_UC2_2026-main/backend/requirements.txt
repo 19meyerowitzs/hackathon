@@ -1,0 +1,35 @@
+# FastAPI Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.12
+slowapi==0.1.9
+
+# Database
+sqlalchemy==2.0.32
+psycopg2-binary==2.9.9
+alembic==1.13.2
+
+# AI/ML
+langgraph==0.6.4
+langchain==0.3.26
+langchain-core==0.3.77
+langchain-community==0.3.26
+langchain-openai==0.3.33
+langchain-mcp-adapters==0.1.8
+litellm==1.77.5
+google-generativeai==0.8.3
+fastmcp==2.10.2
+
+# Utilities  
+python-dotenv==1.1.1
+pydantic==2.11.7
+pydantic-settings==2.7.0
+typing-extensions>=4.14.0
+
+# PDF Support
+pypdf==5.1.0
+
+# Development (optional)
+pytest==8.3.4
+black==24.10.0
+ruff==0.8.4

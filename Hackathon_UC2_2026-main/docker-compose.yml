@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: reputation_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-reputation_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - reputation_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: reputation_backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-reputation_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+      API_SECRET_KEY: ${API_SECRET_KEY}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      Environment: ${Environment:-dev}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      # Omni API Configuration
+      API_Token: ${API_Token}
+      X_API_KEY: ${X_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      # Backup Models
+      model_1: ${model_1:-gpt-4.1-mini}
+      model_2: ${model_2:-claude-sonnet-4}
+      MODEL_1: ${MODEL_1:-gpt-4.1-mini}
+      MODEL_2: ${MODEL_2:-claude-sonnet-4}
+      embedding_model: ${embedding_model:-text-embedding-3-small}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/app:/app/app
+    networks:
+      - reputation_network
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: reputation_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend/app/static:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - reputation_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  reputation_network:
+    driver: bridge
