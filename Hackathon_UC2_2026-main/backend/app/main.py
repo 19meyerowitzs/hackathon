@@ -10,7 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from dotenv import load_dotenv
 
 from .database import init_db
-from .api import health_router, ui_router, reputation_router, web_search_router
+from .api import health_router, ui_router, reputation_router
 
 load_dotenv()
 
@@ -34,7 +34,7 @@ init_db()
 # Create FastAPI app
 app = FastAPI(
     title="Reputation Intelligence API",
-    description="AI-powered press clipping analysis platform with competitive intelligence",
+    description="AI-powered press clipping analysis platform",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -61,7 +61,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(ui_router)
 app.include_router(health_router)
 app.include_router(reputation_router)
-app.include_router(web_search_router)
 
 # ═══════════════════════════════════════════════════════════════
 
