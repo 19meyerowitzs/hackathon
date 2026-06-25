@@ -1,6 +1,4 @@
-"""
-Workflows package.
-"""
-from .reputation_workflow import ReputationWorkflow
+"""Web Search Agents Configuration."""
+from .search_agent import SearchAgentConfig
 
-__all__ = ["ReputationWorkflow"]
+__all__ = ['SearchAgentConfig']
